@@ -1,0 +1,318 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+body {
+	line-height: 1;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body {
+	font-size: 1.15em;
+	font-family: serif;
+	line-height:1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	line-height:1;
+	margin: .5em 0;	
+}
+
+h1 {
+	font-size: 2em;
+
+}
+
+h2 {
+	font-size:1.6em;
+}
+
+h3 {
+	font-size:1.4em;
+}
+
+h4 {
+	font-size:1.2em;
+}
+
+h5, h6 {
+	font-size:1em;
+	text-transform: uppercase;
+}
+
+h6 {
+	color:#999;
+} 
+
+p {
+	margin: 1em 0;
+}
+
+ol {
+	list-style: decimal;
+	margin: 1em 0 1em 1.2em;	
+}
+
+ul {
+	list-style:circle;
+	margin: 1em 0 1em 1em;
+}
+
+li > ol {
+	margin: 0 0 0 1.2em;	
+}
+
+li > ul {
+	margin: 0 0 0 1em;
+}
+
+a {
+	color: #0073b2;
+	text-decoration:none;
+}
+
+strong {
+	font-weight:bold;
+}
+
+em {
+	font-style:italic;
+}
+
+blockquote {
+	background:#efefef;	
+	color:#222;
+	font-size: 1.1em;
+	margin-left:2em;
+	padding:.5em;
+}
+
+blockquote  p {
+	margin: 1em;
+}
+
+code {
+	background:#efefef;
+	font-family: monospace;	
+	padding:.2em;
+}
+
+pre {
+	background:#efefef;
+	color:#222;
+	font-family: monospace;
+	margin: 1em 0;
+	padding:1em;
+	overflow-x: auto;	
+}
+
+pre > code {
+	background:#efefef;
+	padding:0;
+}
+
+.container {
+	margin: 1.5em auto;	
+	width:1200px;
+}
+
+.content {
+	float:right;
+	width:70%;
+}
+
+.content > .pad {
+	margin: 0 2.8%;
+}
+
+.sidebar {
+	float:left;
+	font-size: .8em;
+	overflow-x: hidden;
+  	overflow-y: auto;
+	position:fixed;
+	top:0;
+	bottom:0;
+	width:30%;
+}
+
+.sidebar h1 {
+	font-size: 1.7em;
+	margin-bottom:1.3em;
+}
+
+.sidebar h2 {
+	font-size: 1em;
+	text-transform: capitalize;
+	margin: 0;
+}
+
+.sidebar > .pad {
+	margin: 1.8em 6.6% 0 6.6%;
+}
+
+.sidebar ul {
+	list-style:none;
+	margin: .5em 0 1.5em 0;
+}
+
+.sidebar li > ul {
+	list-style:none;
+	margin: 0  0 0 6.6%;
+}
+
+.sidebar ul ul > li {
+	list-style:circle;
+}
+
+.pad h1:first-child {
+	margin-top: 0;
+}
+
+@media (max-width: 1199px){
+	.container {
+		margin: 1.5em 0;	
+		width: 100%;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+	body {
+		font-size: 1em;
+	}	
+
+	.container {
+		margin: 1.5em 0;
+		width: 100%;
+	}
+}
+
+@media (max-width: 768px) {
+	body {
+		font-size: 1em;
+	}
+
+	.container {
+		margin: 1.5em 0;	
+		width: 100%;
+	}
+
+	.content {
+		float:none;
+		width:100%;
+	}
+
+	.sidebar {
+		float:none;
+		margin-top: 3em;	
+		position:static;
+		width:100%;
+	}
+
+	.sidebar > .pad {
+		margin: 0 2.8%;
+	}
+
+	.sidebar a {
+		color:#fff;
+		font-family: "sans-serif";		
+	}
+
+	.sidebar a:hover {
+		text-decoration: underline;
+	}
+
+	.sidebar h2 {
+		color: #fff;
+		display: none;
+		font-weight:bold;
+		font-family: "sans-serif";
+	}
+
+	.sidebar ul {
+		color:#fff;
+		display:none;
+	}
+
+	.menu {
+		background: rgba(0,0,0, 0.8);
+		overflow-x:hidden;
+	  	overflow-y: auto;
+		position:fixed;
+		padding: 0 2.8%;
+		top:0;
+		left:0;
+		width:100%;
+	}
+
+	.menu h1:first-child {
+		color:#fff;
+		cursor:pointer;
+		display:block;
+		font-size:1em;
+		font-family: "sans-serif";
+		margin: .5em 0;
+	}
+
+	.menu h1:before {
+		content: '+ ';
+	}
+
+	.menu:hover {
+		bottom:50%;
+	}
+	.menu:hover h1 {
+		margin-bottom:2em;
+	}
+
+	.menu:hover h2,
+	.menu:hover ul {
+		display:block;
+	}
+}
