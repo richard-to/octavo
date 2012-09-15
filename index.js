@@ -4,7 +4,7 @@ var server = function(config){
 	var _ = require('underscore')	
 	var express = require('express')
 
-	var app = express();
+	var app = express()
 
 	var settings = {
 		octavo: {},
@@ -54,7 +54,7 @@ var octavo = function(config){
 		ext: '.md',
 		title: 'Octavo',
 		default_post: 'index',
-		base_url: '',
+		base_path: '/',
 		theme: {
 			template: 'octavo',
 			css: '/css/octavo.css'
@@ -69,7 +69,7 @@ var octavo = function(config){
 				async.map(
 					toc, 
 					function(meta, callback){
-						var post_link = '- [' + meta[1] + "] (" + settings.base_url + "/" + meta[0] + ")\n"
+						var post_link = '- [' + meta[1] + "] (" + settings.base_path + meta[0] + ")\n"
 						callback(null, post_link)
 					}, 
 					function(err, results){
@@ -100,11 +100,12 @@ var octavo = function(config){
 	var render_post_html = function(post, req, res, next) {
 		var file_path = path.join(settings.posts_path, post + settings.ext)
 		var toc_file_path = path.join(settings.posts_path, settings.toc_filename)
-
+		var site_url = req.protocol + '://' + req.headers.host + '/'
 		fs.readFile(file_path, function(err, data){
 			if(err == null){
 				if(settings.auto_generate_toc == false){
 					res.render(settings.theme.template, {
+						site_url: site_url,						
 						title: settings.title,
 						css: settings.theme.css,
 						content: markdown.toHTML(data.toString()),
@@ -114,6 +115,7 @@ var octavo = function(config){
 					build_toc(toc_file_path, function(err, menu){
 						if(err == null){
 							res.render(settings.theme.template, {
+								site_url: site_url,
 								title: settings.title,
 								css: settings.theme.css,
 								content: markdown.toHTML(data.toString()),
@@ -142,10 +144,10 @@ var octavo = function(config){
 	}
 
 	return function(req, res, next){
-		var base_url = settings.base_url.replace('/', '\/')
+		var base_path = settings.base_path.replace('/', '\/')
 		
 		if(req.xhr){
-			var url_regex =  new RegExp("^" + base_url + "\/api\/posts\/([a-z\d]+[\/a-z\d\-]*[a-z\d]+)?$")
+			var url_regex =  new RegExp("^" + base_path + "api\/posts\/([a-z\d]+[\/a-z\d\-]*[a-z\d]+)?$")
 			url_match = req.path.match(url_regex)
 			if(url_match == null || url_match[1] == undefined){
 				next()		
@@ -154,7 +156,7 @@ var octavo = function(config){
 			var post = url_match[1]
 			render_post_json(post, req, res, next)
 		} else {
-			var url_regex =  new RegExp("^" + base_url + "\/([a-z\d]+[\/a-z\d\-]*[a-z\d]+)?$")
+			var url_regex =  new RegExp("^" + base_path + "([a-z\d]+[\/a-z\d\-]*[a-z\d]+)?$")
 			url_match = req.path.match(url_regex)
 			if(url_match == null){
 				next()		
