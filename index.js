@@ -83,30 +83,22 @@ var octavo = function(config){
 		})
 	}
 
-	if(settings.auto_generate_toc == false){
+	var render_post_json = function(post, req, res, next) {
+		var file_path = path.join(settings.posts_path, post + settings.ext)
 		var toc_file_path = path.join(settings.posts_path, settings.toc_filename)
-		build_toc(toc_file_path, function(err, menu){
+
+		fs.readFile(file_path, function(err, data){
 			if(err == null){
-				settings.toc_str = menu
+				res.json({id: post, content: markdown.toHTML(data.toString())})
+			} else {
+				console.log(err)
+				next()
 			}
-		})		
+		})
 	}
 
-	return function(req, res, next){
-		var base_url = settings.base_url.replace('/', '\/')
-		var url_regex =  new RegExp("^" + base_url + "\/([a-z\d]+[\/a-z\d\-]*[a-z\d]+)?$")
-		url_match = req.path.match(url_regex)
-		if(url_match == null){
-			next()		
-			return
-		}
-
-		var from = 	url_match[1]
-		if(from == undefined) {
-			from = settings.default_page
-		}
-
-		var file_path = path.join(settings.posts_path, from + settings.ext)
+	var render_post_html = function(post, req, res, next) {
+		var file_path = path.join(settings.posts_path, post + settings.ext)
 		var toc_file_path = path.join(settings.posts_path, settings.toc_filename)
 
 		fs.readFile(file_path, function(err, data){
@@ -138,6 +130,42 @@ var octavo = function(config){
 				next()
 			}
 		})
+	}
+
+	if(settings.auto_generate_toc == false){
+		var toc_file_path = path.join(settings.posts_path, settings.toc_filename)
+		build_toc(toc_file_path, function(err, menu){
+			if(err == null){
+				settings.toc_str = menu
+			}
+		})		
+	}
+
+	return function(req, res, next){
+		var base_url = settings.base_url.replace('/', '\/')
+		
+		if(req.xhr){
+			var url_regex =  new RegExp("^" + base_url + "\/api\/posts\/([a-z\d]+[\/a-z\d\-]*[a-z\d]+)?$")
+			url_match = req.path.match(url_regex)
+			if(url_match == null || url_match[1] == undefined){
+				next()		
+				return
+			}
+			var post = url_match[1]
+			render_post_json(post, req, res, next)
+		} else {
+			var url_regex =  new RegExp("^" + base_url + "\/([a-z\d]+[\/a-z\d\-]*[a-z\d]+)?$")
+			url_match = req.path.match(url_regex)
+			if(url_match == null){
+				next()		
+				return
+			}
+			var post = 	url_match[1]
+			if(post == undefined) {
+				post = settings.default_post
+			}
+			render_post_html(post, req, res, next)
+		}
 	}
 }
 
