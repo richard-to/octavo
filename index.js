@@ -73,7 +73,7 @@ var octavo = function(config){
 						callback(null, post_link)
 					}, 
 					function(err, results){
-						func(err, results.join())
+						func(err, results.join(''))
 					}
 				)
 			} else {
