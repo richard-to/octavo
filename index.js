@@ -45,24 +45,24 @@ var octavo = function(config){
 	var path = require('path')
 	var fs = require('fs')
 	var _ = require('underscore')	
-	var mmd = require('multimarkdown')
+	var markdown = require('markdown').markdown
 
 	var settings = {
-		doc_path: null,
+		posts_path: null,
 		toc_filename: 'toc.json',
 		auto_generate_toc: true,
 		ext: '.md',
-		title: 'Doc-Md',
-		default_page: 'index',
+		title: 'Octavo',
+		default_post: 'index',
 		base_url: '',
 		theme: {
-			template: 'doc-md',
-			css: '/css/doc-md.css'
+			template: 'octavo',
+			css: '/css/octavo.css'
 		}
 	}
 	_.extend(settings, config)
 
-	var parse_toc = function(toc_file, doc_meta, func){
+	var parse_toc = function(toc_file, posts_meta, func){
 		var trim_regex = /^\s*|\s*$/g
 		fs.readFile(toc_file, function(err, data){
 			if(err == null){
@@ -70,13 +70,13 @@ var octavo = function(config){
 				async.map(
 					toc, 
 					function(filename, callback){
-						var dir_path = path.join(settings.doc_path, filename)
+						var dir_path = path.join(settings.posts_path, filename)
 						fs.lstat(dir_path, function(err, stats){
 							if(!err && stats.isDirectory()){
 								var sub_toc = path.join(dir_path, settings.toc_filename)
-								parse_toc(sub_toc, doc_meta, callback)
+								parse_toc(sub_toc, posts_meta, callback)
 							} else {
-								var dir_name = toc_file.replace(settings.doc_path, '')
+								var dir_name = toc_file.replace(settings.posts_path, '')
 									.replace(settings.toc_filename, '').replace(/^\/*|\/*$/g, '')
 								var file_path = toc_file.replace(settings.toc_filename, filename + settings.ext)
 
@@ -117,7 +117,7 @@ var octavo = function(config){
 					function(err, results){
 						for(var i = 0; i < results.length; i++){
 							if(!_.isArray(results[i]))
-								doc_meta.push(results[i])
+								posts_meta.push(results[i])
 						}
 						func(err, results)
 					}
@@ -173,7 +173,7 @@ var octavo = function(config){
 	}
 
 	if(settings.auto_generate_toc == false){
-		var toc_file_path = path.join(settings.doc_path, settings.toc_filename)
+		var toc_file_path = path.join(settings.posts_path, settings.toc_filename)
 		parse_toc(toc_file_path, [], function(err, results){
 			if(err == null){
 				build_toc(results, function(menu){
@@ -197,8 +197,8 @@ var octavo = function(config){
 			from = settings.default_page
 		}
 
-		var file_path = path.join(settings.doc_path, from + settings.ext)
-		var toc_file_path = path.join(settings.doc_path, settings.toc_filename)
+		var file_path = path.join(settings.posts_path, from + settings.ext)
+		var toc_file_path = path.join(settings.posts_path, settings.toc_filename)
 
 		fs.readFile(file_path, function(err, data){
 			if(err == null){
@@ -206,8 +206,8 @@ var octavo = function(config){
 					res.render(settings.theme.template, {
 						title: settings.title,
 						css: settings.theme.css,
-						content: mmd.convert(data.toString()),
-						toc: mmd.convert(settings.toc_str)
+						content: markdown.toHTML(data.toString()),
+						toc: markdown.toHTML(settings.toc_str)
 					})
 				} else {
 					parse_toc(toc_file_path, [], function(err, results){
@@ -216,8 +216,8 @@ var octavo = function(config){
 								res.render(settings.theme.template, {
 									title: settings.title,
 									css: settings.theme.css,
-									content: mmd.convert(data.toString()),
-									toc: mmd.convert(menu)
+									content: markdown.toHTML(data.toString()),
+									toc: markdown.toHTML(menu)
 								})
 							})
 						} else {
