@@ -62,64 +62,18 @@ var octavo = function(config){
 	}
 	_.extend(settings, config)
 
-	var parse_toc = function(toc_file, posts_meta, func){
-		var trim_regex = /^\s*|\s*$/g
+	var build_toc = function(toc_file, func){
 		fs.readFile(toc_file, function(err, data){
 			if(err == null){
 				var toc = JSON.parse(data)
 				async.map(
 					toc, 
-					function(filename, callback){
-						var dir_path = path.join(settings.posts_path, filename)
-						fs.lstat(dir_path, function(err, stats){
-							if(!err && stats.isDirectory()){
-								var sub_toc = path.join(dir_path, settings.toc_filename)
-								parse_toc(sub_toc, posts_meta, callback)
-							} else {
-								var dir_name = toc_file.replace(settings.posts_path, '')
-									.replace(settings.toc_filename, '').replace(/^\/*|\/*$/g, '')
-								var file_path = toc_file.replace(settings.toc_filename, filename + settings.ext)
-
-								var url_path = filename
-								if(dir_name != ''){
-									url_path = dir_name + "/" + filename
-								}
-
-								var page_meta = {
-									name: filename,
-									parent: dir_name,
-									url_path: url_path,
-									title: filename, 
-									subheads: []
-								}
-
-								new lazy(fs.createReadStream(file_path))
-									.lines
-									.map(String)
-									.forEach(function(line){
-										if(line[0] == '#' && line[1] != '#'){
-											page_meta.title = line.substring(1).replace(trim_regex, '')
-										} else if(line[0] == '#' && line[1] == '#' && line[2] != '#'){
-											var subhead = line.substring(2).replace(trim_regex, '')
-											page_meta.subheads.push({ 
-												title:subhead,
-												anchor: subhead.replace(/ /g, '').toLowerCase()
-											})
-										}
-
-									})
-									.join(function(xs){
-										callback(null, page_meta)
-									})
-							}
-						});
+					function(meta, callback){
+						var post_link = '- [' + meta[1] + "] (" + settings.base_url + "/" + meta[0] + ")\n"
+						callback(null, post_link)
 					}, 
 					function(err, results){
-						for(var i = 0; i < results.length; i++){
-							if(!_.isArray(results[i]))
-								posts_meta.push(results[i])
-						}
-						func(err, results)
+						func(err, results.join())
 					}
 				)
 			} else {
@@ -127,58 +81,13 @@ var octavo = function(config){
 				func("Invalid toc file.")
 			}		
 		})
-	}	
-
-	var build_toc = function(toc_meta, func){
-
-		async.map(
-			toc_meta, 
-			function(section, callback){
-
-				var toc_str = ''
-
-				if(!_.isArray(section)){
-					section = [section]
-				} else {
-					toc_str = "## " + section[0].parent.toLowerCase().replace("-", " ") + "\n\n"
-				}
-
-				var count_pages = section.length		
-				for(var i = 0; i < count_pages; i++){
-					var page =  section[i]
-					var subheads = page['subheads']
-					
-					toc_str += '- [' + page.title + "] (" + settings.base_url + "/" + page.url_path + ")\n"
-					
-					var count_subheads = subheads.length
-					for(var g = 0; g < count_subheads; g++){
-						toc_str += '    - [' + 
-							subheads[g].title + "] (" + 
-							settings.base_url + "/" + page.url_path + "#" + 
-							subheads[g].anchor + ")\n"
-					}
-				}
-				toc_str += "\n"
-				callback(null, toc_str)
-			},
-			function(err, results){
-				var menu = ''
-				var count = results.length
-				for(var i = 0; i < count; i++){
-					menu += results[i]
-				}
-				func(menu)
-			}
-		);
 	}
 
 	if(settings.auto_generate_toc == false){
 		var toc_file_path = path.join(settings.posts_path, settings.toc_filename)
-		parse_toc(toc_file_path, [], function(err, results){
+		build_toc(toc_file_path, function(err, menu){
 			if(err == null){
-				build_toc(results, function(menu){
-					settings.toc_str = menu
-				})
+				settings.toc_str = menu
 			}
 		})		
 	}
@@ -210,15 +119,13 @@ var octavo = function(config){
 						toc: markdown.toHTML(settings.toc_str)
 					})
 				} else {
-					parse_toc(toc_file_path, [], function(err, results){
+					build_toc(toc_file_path, function(err, menu){
 						if(err == null){
-							build_toc(results, function(menu){
-								res.render(settings.theme.template, {
-									title: settings.title,
-									css: settings.theme.css,
-									content: markdown.toHTML(data.toString()),
-									toc: markdown.toHTML(menu)
-								})
+							res.render(settings.theme.template, {
+								title: settings.title,
+								css: settings.theme.css,
+								content: markdown.toHTML(data.toString()),
+								toc: markdown.toHTML(menu)
 							})
 						} else {
 							console.log(err)
