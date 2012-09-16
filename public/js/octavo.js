@@ -9,12 +9,25 @@ var PostCollection = Backbone.Collection.extend({
     url: '/api/posts'
 })
 
+var PostListView = Backbone.View.extend({
+    template: _.template('<div class="post_wrap"><%= content %></div>'),
+    initalize: function(){
+        _.bindAll(this, 'render')
+    },
+    render: function() {
+        var view = this
+        $(this.el).html('')
+        this.collection.each(function(model){
+            $(view.el).append(view.template({content:model.get('content')}))
+        })
+    }
+})
+
 var PostView = Backbone.View.extend({
     initalize: function(){
         _.bindAll(this, 'render', 'setPost')
     },
     render: function() {
-
         $(this.el).html(this.model.get('content'))
     },
     setPost: function(postId){
@@ -35,23 +48,17 @@ var PostView = Backbone.View.extend({
     }
 })
 
-var AppView = Backbone.View.extend({
+var MenuView = Backbone.View.extend({
     initialize: function(options) {
-        _.bindAll(this, 'render', 'viewPost')
+        _.bindAll(this, 'render', 'navigate')
         this.config = options.config
         this.router = options.router
-        this.collection = options.collection
     },
-    render: function(){
-        this.postView = new PostView({
-            el: this.$('.content .pad'), 
-            collection: this.collection
-        })
-    },
+    render: function(){},
     events: {
-        'click .menu a': 'viewPost'
+        'click .menu a': 'navigate'
     },
-    viewPost: function(e){
+    navigate: function(e){
         e.preventDefault()
         this.router.navigate(e.target.href.replace(config.site_url, ''), {trigger: true})        
     }
@@ -60,19 +67,32 @@ var AppView = Backbone.View.extend({
 var OctavoRouter = Backbone.Router.extend({
     initialize: function(options){
         this.collection = new PostCollection()
-        this.app = new AppView({
+        
+        this.menu = new MenuView({
             el: $(document.body),
-            collection: this.collection,
             config: options.config,
             router: this
         })
-        this.app.render()
+
+        this.postView = new PostView({
+            el: $('.content .pad'), 
+            collection: this.collection
+        })
+
+        this.postListView = new PostListView({
+            el: $('.content .pad'), 
+            collection: this.collection
+        })         
     },
     routes: {
-        ":post_id": "postAction"
+        ":post_id": "postAction",
+        "": "indexAction"
     },
     postAction: function(post_id){
-        this.app.postView.setPost(post_id)
+        this.postView.setPost(post_id)
+    },
+    indexAction: function(){
+        this.postListView.render()
     }
 })
 
