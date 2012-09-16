@@ -54,12 +54,13 @@ table {
 }
 
 body {
-	font-size: 1.15em;
-	font-family: serif;
+	font-size: 1.3em;
+	font-family: 'Source Sans Pro', Corbel, Helvetica, Arial, "Nimbus Sans L", "Liberation Sans", sans-serif;
 	line-height:1.5;
 }
 
 h1, h2, h3, h4, h5, h6 {
+	font-family: 'Lato', Corbel, Helvetica, Arial, "Nimbus Sans L", "Liberation Sans", sans-serif;
 	line-height:1;
 	margin: .5em 0;	
 }
@@ -139,14 +140,14 @@ blockquote  p {
 
 code {
 	background:#efefef;
-	font-family: monospace;	
+	font-family: Consolas, "Bitstream Vera Sans Mono", "Andale Mono", Monaco, "DejaVu Sans Mono", "Lucida Console", monospace;	
 	padding:.2em;
 }
 
 pre {
 	background:#efefef;
 	color:#222;
-	font-family: monospace;
+	font-family: Consolas, "Bitstream Vera Sans Mono", "Andale Mono", Monaco, "DejaVu Sans Mono", "Lucida Console", monospace;
 	margin: 1em 0;
 	padding:1em;
 	overflow-x: auto;	
@@ -164,11 +165,15 @@ pre > code {
 
 .content {
 	float:right;
-	width:70%;
+	width:80%;
 }
 
 .content > .pad {
 	margin: 0 2.8%;
+}
+
+.post_wrap {
+	margin-bottom: 3em;
 }
 
 .sidebar {
@@ -179,7 +184,7 @@ pre > code {
 	position:fixed;
 	top:0;
 	bottom:0;
-	width:30%;
+	width:20%;
 }
 
 .sidebar h1 {
@@ -200,6 +205,11 @@ pre > code {
 .sidebar ul {
 	list-style:none;
 	margin: .5em 0 1.5em 0;
+}
+
+.sidebar li {
+	line-height:1;
+	margin-bottom: .75em;
 }
 
 .sidebar li > ul {
@@ -224,7 +234,7 @@ pre > code {
 
 @media (min-width: 768px) and (max-width: 979px) {
 	body {
-		font-size: 1em;
+		font-size: 1.15em;
 	}	
 
 	.container {
@@ -235,7 +245,7 @@ pre > code {
 
 @media (max-width: 768px) {
 	body {
-		font-size: 1em;
+		font-size: 1.15em;
 	}
 
 	.container {
@@ -260,8 +270,7 @@ pre > code {
 	}
 
 	.sidebar a {
-		color:#fff;
-		font-family: "sans-serif";		
+		color:#fff;		
 	}
 
 	.sidebar a:hover {
@@ -272,7 +281,6 @@ pre > code {
 		color: #fff;
 		display: none;
 		font-weight:bold;
-		font-family: "sans-serif";
 	}
 
 	.sidebar ul {
@@ -296,7 +304,6 @@ pre > code {
 		cursor:pointer;
 		display:block;
 		font-size:1em;
-		font-family: "sans-serif";
 		margin: .5em 0;
 	}
 
