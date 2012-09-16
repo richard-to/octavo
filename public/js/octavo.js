@@ -14,7 +14,8 @@ var PostView = Backbone.View.extend({
         _.bindAll(this, 'render', 'setPost')
     },
     render: function() {
-        $el.html(this.content)
+
+        $(this.el).html(this.model.get('content'))
     },
     setPost: function(postId){
         var view = this
@@ -35,9 +36,11 @@ var PostView = Backbone.View.extend({
 })
 
 var AppView = Backbone.View.extend({
-    initialize: function() {
+    initialize: function(options) {
         _.bindAll(this, 'render', 'viewPost')
-        this.collection = new PostCollection()
+        this.config = options.config
+        this.router = options.router
+        this.collection = options.collection
     },
     render: function(){
         this.postView = new PostView({
@@ -56,8 +59,14 @@ var AppView = Backbone.View.extend({
 
 var OctavoRouter = Backbone.Router.extend({
     initialize: function(options){
-        this.app = options.app
-        this.app.router = this
+        this.collection = new PostCollection()
+        this.app = new AppView({
+            el: $(document.body),
+            collection: this.collection,
+            config: options.config,
+            router: this
+        })
+        this.app.render()
     },
     routes: {
         ":post_id": "postAction"
@@ -67,9 +76,7 @@ var OctavoRouter = Backbone.Router.extend({
     }
 })
 
-var app = new AppView()
-var router = new OctavoRouter({
-    app:app
+$(document).ready(function(){
+    var router = new OctavoRouter({config: config})
+    Backbone.history.start({pushState:true, silent:true})
 })
-
-Backbone.history.start({pushState:true, silent:true})
