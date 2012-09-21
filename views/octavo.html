@@ -36,6 +36,24 @@
 	    	<div class="pad">
 	    		<%- content %>
 			</div>
+			
+			<% if(about.content != undefined) { %>
+			<div class="pad">
+				<div class="about-container">
+					
+					<% if(about.avatar != undefined) { %>
+					<div class="avatar-wrap">
+						<img class="avatar" src="<%= about.avatar %>" alt="Avatar" width="80" height="80" />
+					</div>
+					<% } %>
+
+					<div class="about-wrap">
+						<%- about.content %>
+					</div>
+				</div>
+			</div>
+			<% } %>
+
 		</div>
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
