@@ -165,7 +165,7 @@ pre > code {
 
 .content {
 	float:right;
-	width:80%;
+	width:75%;
 }
 
 .content > .pad {
@@ -184,7 +184,6 @@ pre > code {
 	position:fixed;
 	top:0;
 	bottom:0;
-	width:20%;
 }
 
 .sidebar h1 {
@@ -259,6 +258,10 @@ pre > code {
 	.container {
 		margin: 1.5em 0;
 		width: 100%;
+	}
+
+	.sidebar {
+		width:20%;
 	}
 }
 
