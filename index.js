@@ -58,7 +58,8 @@ var octavo = function(config){
 		theme: {
 			template: 'octavo',
 			css: '/css/octavo.css'
-		}
+		},
+		about: null
 	}
 	_.extend(settings, config)
 
@@ -109,6 +110,7 @@ var octavo = function(config){
 						title: settings.title,
 						css: settings.theme.css,
 						content: markdown.toHTML(data.toString()),
+						about: settings.about,
 						toc: markdown.toHTML(settings.toc_str)
 					})
 				} else {
@@ -119,6 +121,7 @@ var octavo = function(config){
 								title: settings.title,
 								css: settings.theme.css,
 								content: markdown.toHTML(data.toString()),
+								about: settings.about,
 								toc: markdown.toHTML(menu)
 							})
 						} else {
@@ -141,6 +144,14 @@ var octavo = function(config){
 				settings.toc_str = menu
 			}
 		})		
+	}
+
+	if(settings.about != null && settings.about.content_file != undefined){
+		fs.readFile(settings.about.content_file, function(err, data){
+			if(err == null){
+				settings.about.content = markdown.toHTML(data.toString())
+			}			
+		})
 	}
 
 	return function(req, res, next){
