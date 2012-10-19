@@ -90,6 +90,7 @@ var OctavoRouter = Backbone.Router.extend({
     },
     postAction: function(post_id){
         this.postView.setPost(post_id)
+        $(document.body).scrollTop(0)
     },
     indexAction: function(){
         this.postListView.render()
